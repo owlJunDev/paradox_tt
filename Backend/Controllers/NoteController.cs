@@ -1,35 +1,53 @@
-using Backend.Entity;
+using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+
+using Backend.Repositories;
+using Backend.DTO;
 
 namespace Backend.Controllers
 {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/note")]
     public class NoteController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+        private readonly NoteRepository noteRepository;
 
-        private readonly ILogger<NoteController> _logger;
-
-        public NoteController(ILogger<NoteController> logger)
+        public NoteController(NoteRepository noteRepository)
         {
-            _logger = logger;
+            this.noteRepository = noteRepository;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<Note> Get()
+        [HttpGet()]
+        public IEnumerable<Note> GetAll(FilterDto? filterDto)
         {
-            return Enumerable.Range(1, 5).Select(index => new Note
-            {
-                id = index,
-                dateCreate = DateTime.Now,
-                text = "testText"
-            })
-            .ToArray();
+            return noteRepository.GetAll(filterDto);
         }
+
+
+        [HttpGet("{id}")]
+        public Note GetById(int id)
+        {
+            return noteRepository.GetById(id);
+        }
+
+        [HttpPost(Name = "PostNote")]
+        public IActionResult Post(NoteDto noteDto)
+        {
+            var note = new Note();
+
+            note.title = noteDto.title;
+            note.content = noteDto.content;
+            note.dateCreate = DateTime.Now.ToUniversalTime();
+
+            noteRepository.Add(note, noteDto.tagId);
+            return RedirectToAction("GetAll");
+        }
+
+        [HttpPut("{id}")]
+        public void Put() { }
+
+        [HttpDelete("{id}")]
+        public void Delete() { }
     }
 }
