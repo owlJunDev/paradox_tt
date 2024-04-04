@@ -19,7 +19,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet()]
-        public IEnumerable<Note> GetAll(FilterDto? filterDto)
+        public IEnumerable<Note> GetAll([FromQuery]FilterDto? filterDto)
         {
             return noteRepository.GetAll(filterDto);
         }
@@ -38,7 +38,7 @@ namespace Backend.Controllers
 
             note.title = noteDto.title;
             note.content = noteDto.content;
-            note.dateCreate = DateTime.Now.ToUniversalTime();
+            note.dateCreate = DateTime.UtcNow;
 
             noteRepository.Add(note, noteDto.tagId);
             return RedirectToAction("GetAll");

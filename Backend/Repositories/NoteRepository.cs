@@ -60,11 +60,14 @@ namespace Backend.Repositories
 
             System.Console.WriteLine("filter start");
             if (filterDto.date != null)
-                result = result.Where(n => n.dateCreate.ToString("dd.mm.yyyy") == filterDto.date.ToUniversalTime().ToString("dd.mm.yyyy"));
-            
+            {
+                var hours = TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).TotalHours;
+                var date = DateTime.Parse(filterDto.date).AddHours(hours);
+                result = result.Where(n => n.dateCreate.Date == date.ToUniversalTime().Date);
+            }
             if (filterDto.content != null)
                 result = result.Where(n => n.content.ToLower().Contains(filterDto.content.ToLower()));
-            
+
             if (filterDto.title != null)
                 result = result.Where(n => n.title.ToLower().Contains(filterDto.title.ToLower()));
             System.Console.WriteLine("filter end");
