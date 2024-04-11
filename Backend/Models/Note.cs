@@ -19,5 +19,7 @@ namespace Backend.Models
         
         [Column("date-create")]
         public DateTime dateCreate { get; set; }
+        
+        public List<Tag> tags{ get; set; } = new List<Tag>();
     }
 }

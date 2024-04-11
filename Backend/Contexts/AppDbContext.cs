@@ -7,7 +7,6 @@ namespace Backend.Contexts
     {
         public DbSet<Note> noteTable { get; set; }
         public DbSet<Tag> tagTable { get; set; }
-        public DbSet<NoteTag> noteTagTable { get; set; }
         public AppDbContext()
         {
             Database.EnsureCreated();

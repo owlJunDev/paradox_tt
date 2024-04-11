@@ -19,13 +19,13 @@ namespace Backend.Controllers
         }
 
         [HttpGet(Name = "GetTag")]
-        public IEnumerable<Tag> GetAll()
+        public IEnumerable<Tag> Get()
         {
             return tagRepository.GetAll();
         }
 
         [HttpGet("{id}")]
-        public Tag GetById(long id)
+        public Tag Get(long id)
         {
             return tagRepository.GetById(id);
         }
@@ -37,7 +37,7 @@ namespace Backend.Controllers
             tag.nameTag = tagDto.nameTag;
 
             tagRepository.Add(tag);
-            return RedirectToAction("GetAll");
+            return RedirectToAction("Get");
         }
 
         [HttpPut("{id}/put")]

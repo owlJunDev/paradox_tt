@@ -1,29 +1,64 @@
 using Backend.Repositories;
 using Backend.Contexts;
+using Backend.Models;
 
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.OData;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.OData.ModelBuilder;
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSingleton<NoteRepository>();
-builder.Services.AddSingleton<TagRepository>();
-builder.Services.AddSingleton<AppDbContext>();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-app.UseStaticFiles();
-if (app.Environment.IsDevelopment())
+namespace Backend
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    class Program
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Backend");
-        c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
-    });
+
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<NoteRepository>();
+            builder.Services.AddScoped<TagRepository>();
+            builder.Services.AddDbContext<AppDbContext>();
+
+            var modelBuilder = new ODataConventionModelBuilder();
+            modelBuilder.EntityType<Note>();
+            modelBuilder.EntitySet<Note>("Notes");
+
+            builder.Services
+                .AddControllers()
+                .AddOData(options =>
+                    options
+                        .Select()
+                        .Expand()
+                        .Filter()
+                        .Count()
+                        .OrderBy()
+                        .SetMaxTop(100)
+                        .EnableQueryFeatures()
+                        .AddRouteComponents(
+                            routePrefix: "odata",
+                            model: modelBuilder.GetEdmModel()));
+
+            var app = builder.Build();
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseStaticFiles();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Backend");
+                    c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+                });
+            }
+
+            app.UseHttpsRedirection();
+            app.UseAuthorization();
+            app.MapControllers();
+
+            app.Run();
+        }
+
+    }
 }
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
-
-app.Run();

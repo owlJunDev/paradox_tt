@@ -12,5 +12,7 @@ namespace Backend.Models
 
         [Column("name_tag")]
         public string? nameTag { get; set; }
+        
+        public List<Note> notes{ get; set; } = new List<Note>();
     }
 }

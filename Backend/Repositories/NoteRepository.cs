@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Backend.Contexts;
 using Backend.Models;
 using Backend.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repositories
 {
@@ -20,59 +21,45 @@ namespace Backend.Repositories
         {
             context.noteTable.Add(note);
             context.SaveChanges();
-            System.Console.WriteLine($"note id:{note.id}");
-            foreach (var tagId in tagsId)
+
+            if (tagsId != null)
             {
-                if (context.tagTable.Find(tagId) != null)
+                foreach (var tag in context.tagTable.Where(t => tagsId.Contains(t.id)))
                 {
-                    System.Console.WriteLine($"tag id:{tagId}");
-                    var noteTags = new NoteTag();
-                    noteTags.noteId = note.id;
-                    noteTags.tagId = tagId;
-                    context.noteTagTable.Add(noteTags);
+                    System.Console.WriteLine($"tag id: {tag.id}, name: {tag.nameTag}");
+                    note.tags.Add(tag);
+                    tag.notes.Add(note);
+                    context.tagTable.Update(tag);
                 }
             }
-            context.SaveChanges();
-        }
-
-        public void Update(Note note)
-        {
             context.noteTable.Update(note);
             context.SaveChanges();
         }
 
-        public void Delete(Note note)
+        public void Update(Note note, List<long> tagsId)
         {
-            var noteTags = context.noteTagTable.Where(nt => nt.noteId == note.id).ToList();
-            foreach (var noteTag in noteTags)
+            context.noteTable.Include(n => n.tags).FirstOrDefault(n => n.id == note.id).tags.Clear();
+
+            foreach (var tag in context.tagTable.Where(t => tagsId.Contains(t.id)))
             {
-                context.noteTagTable.Remove(noteTag);
+                note.tags.Add(tag);
+                tag.notes.Add(note);
+                context.tagTable.Update(tag);
             }
-            context.noteTable.Remove(note);
+
+            context.noteTable.Update(note);
             context.SaveChanges();
         }
 
-        public IEnumerable<Note> GetAll(FilterDto? filterDto)
+        public void Delete(long id)
         {
-            IQueryable<Note> result = context.noteTable;
-            if (filterDto == null)
-                return result.ToList();
+            context.noteTable.Remove(GetById(id));
+            context.SaveChanges();
+        }
 
-            System.Console.WriteLine("filter start");
-            if (filterDto.date != null)
-            {
-                var hours = TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).TotalHours;
-                var date = DateTime.Parse(filterDto.date).AddHours(hours);
-                result = result.Where(n => n.dateCreate.Date == date.ToUniversalTime().Date);
-            }
-            if (filterDto.content != null)
-                result = result.Where(n => n.content.ToLower().Contains(filterDto.content.ToLower()));
-
-            if (filterDto.title != null)
-                result = result.Where(n => n.title.ToLower().Contains(filterDto.title.ToLower()));
-            System.Console.WriteLine("filter end");
-
-            return result.ToList();
+        public IEnumerable<Note> GetAll()
+        {
+            return context.noteTable.Include(n => n.tags).ToList();
         }
 
         public Note GetById(long id)

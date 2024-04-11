@@ -24,10 +24,11 @@ namespace Backend.Repositories
 
         public void Delete(Tag tag)
         {
-            var noteTags = context.noteTagTable.Where(nt => nt.tagId == tag.id).ToList();
-            foreach (var noteTag in noteTags)
+            var notes = context.tagTable.SingleOrDefault(nt => nt.id == tag.id).notes;
+            foreach (var note in notes)
             {
-                context.noteTagTable.Remove(noteTag);
+                note.tags.Remove(tag);       
+                context.noteTable.Update(note);
             }
             context.tagTable.Remove(tag);
             context.SaveChanges();
