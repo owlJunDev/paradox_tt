@@ -26,9 +26,7 @@ namespace Backend.Repositories
             {
                 foreach (var tag in context.tagTable.Where(t => tagsId.Contains(t.id)))
                 {
-                    System.Console.WriteLine($"tag id: {tag.id}, name: {tag.nameTag}");
                     note.tags.Add(tag);
-                    tag.notes.Add(note);
                     context.tagTable.Update(tag);
                 }
             }
@@ -43,7 +41,6 @@ namespace Backend.Repositories
             foreach (var tag in context.tagTable.Where(t => tagsId.Contains(t.id)))
             {
                 note.tags.Add(tag);
-                tag.notes.Add(note);
                 context.tagTable.Update(tag);
             }
 

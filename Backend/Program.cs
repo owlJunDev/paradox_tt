@@ -3,7 +3,6 @@ using Backend.Contexts;
 using Backend.Models;
 
 using Microsoft.AspNetCore.OData;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.OData.ModelBuilder;
 
 namespace Backend
@@ -24,7 +23,10 @@ namespace Backend
 
             var modelBuilder = new ODataConventionModelBuilder();
             modelBuilder.EntityType<Note>();
+            modelBuilder.EntityType<Tag>();
+            
             modelBuilder.EntitySet<Note>("Notes");
+            modelBuilder.EntitySet<Tag>("Tags");
 
             builder.Services
                 .AddControllers()

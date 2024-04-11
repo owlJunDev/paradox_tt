@@ -2,7 +2,6 @@ using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.AspNetCore.OData.Query;
-using Microsoft.AspNetCore.OData.Formatter;
 
 using Backend.Repositories;
 using Backend.DTO;
@@ -38,24 +37,20 @@ namespace Backend.Controllers
 
         [HttpPost]
         [EnableQuery]
-        public IActionResult Post([FromBody] NoteDto noteDto)
+        public void Post([FromBody] NoteDto noteDto)
         {
-            System.Console.WriteLine("put request start");
             var note = new Note();
             note.title = noteDto.title;
             note.content = noteDto.content;
             note.dateCreate = DateTime.UtcNow;
             
-            System.Console.WriteLine("put go repos");
-
             noteRepository.Add(note, noteDto.tagId);
-            return RedirectToAction("Get");
         }
 
         [HttpPut("{id}")]
         [EnableQuery]
         public void Put(long id, [FromBody] NoteDto noteDto) {
-            var note = Get(id);
+            var note = noteRepository.GetById(id);
             note.title = noteDto.title;
             note.content = noteDto.content;
             noteRepository.Update(note, noteDto.tagId);

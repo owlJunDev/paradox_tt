@@ -24,7 +24,7 @@ namespace Backend.Repositories
 
         public void Delete(Tag tag)
         {
-            var notes = context.tagTable.SingleOrDefault(nt => nt.id == tag.id).notes;
+            var notes = context.noteTable.Include(n => n.tags).Where(n => n.tags.Contains(tag)).ToList();
             foreach (var note in notes)
             {
                 note.tags.Remove(tag);       

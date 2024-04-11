@@ -1,4 +1,12 @@
 # paradox_tt
-https://learn.microsoft.com/ru-ru/aspnet/core/tutorials/first-web-api?view=aspnetcore-8.0&tabs=visual-studio-code
-dotnet run
-http://localhost:5000/swagger/index.html
+1. установить версию .Net 7
+    `https://dotnet.microsoft.com/en-us/download/dotnet/7.0`
+2. зайти через консоль в папку `paradox_tt/Backend`
+3. ввести команду: `dotnet run`
+
+4. ссылка для перехода в swagger
+    - `http://localhost:5000/swagger/index.html`
+5. примеры фильтрации используя запросы через oData:
+    - `http://localhost:5000/api/note/?$filter=date(dateCreate) eq 2024-04-21`
+    - `http://localhost:5000/api/note/?$filter=title eq 'string'`
+    - `http://localhost:5000/api/note/?$filter=title eq 'string' and date(dateCreate) eq 2024-04-21`

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Backend.Models
 {
@@ -12,7 +13,8 @@ namespace Backend.Models
 
         [Column("name_tag")]
         public string? nameTag { get; set; }
-        
-        public List<Note> notes{ get; set; } = new List<Note>();
+
+        [JsonIgnore]
+        public List<Note> notes { get; set; } = new List<Note>();
     }
 }

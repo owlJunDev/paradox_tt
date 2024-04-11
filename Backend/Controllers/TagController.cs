@@ -18,7 +18,7 @@ namespace Backend.Controllers
             this.tagRepository = tagRepository;
         }
 
-        [HttpGet(Name = "GetTag")]
+        [HttpGet]
         public IEnumerable<Tag> Get()
         {
             return tagRepository.GetAll();
@@ -30,14 +30,13 @@ namespace Backend.Controllers
             return tagRepository.GetById(id);
         }
 
-        [HttpPost(Name = "PostTag")]
-        public IActionResult Post(TagDto tagDto)
+        [HttpPost]
+        public void Post(TagDto tagDto)
         {
             var tag = new Tag();
             tag.nameTag = tagDto.nameTag;
 
             tagRepository.Add(tag);
-            return RedirectToAction("Get");
         }
 
         [HttpPut("{id}/put")]
@@ -56,7 +55,6 @@ namespace Backend.Controllers
         public void Delete(long id)
         {
             var tag = tagRepository.GetById(id);
-            System.Console.WriteLine($"--- -- {tag} -- ---");
             if (tag != null)
                 tagRepository.Delete(tag);
         }
