@@ -4,6 +4,7 @@ using Backend.Models;
 
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend
 {
@@ -13,18 +14,25 @@ namespace Backend
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var configuration = builder.Configuration;
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddScoped<NoteRepository>();
             builder.Services.AddScoped<TagRepository>();
-            builder.Services.AddDbContext<AppDbContext>();
+            
+            builder.Services.AddDbContext<AppDbContext>(
+                options =>
+                {
+                    options.UseNpgsql(configuration.GetConnectionString(nameof(AppDbContext)));
+                });
 
             var modelBuilder = new ODataConventionModelBuilder();
             modelBuilder.EntityType<Note>();
             modelBuilder.EntityType<Tag>();
-            
+
             modelBuilder.EntitySet<Note>("Notes");
             modelBuilder.EntitySet<Tag>("Tags");
 

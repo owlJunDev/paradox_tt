@@ -5,6 +5,7 @@
      * `paradox_tt/Backend`
 3. ввести следующие команды: 
     * `dotnet build`
+    * `dotnet ef database update`
     * `dotnet run`
 
 4. ссылка для перехода в swagger
