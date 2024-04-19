@@ -1,23 +1,22 @@
+using Backend.Configurations;
 using Backend.Models;
+
 using Microsoft.EntityFrameworkCore;
- 
+
 namespace Backend.Contexts
 {
     public class AppDbContext : DbContext
     {
         public DbSet<Note> noteTable { get; set; }
         public DbSet<Tag> tagTable { get; set; }
-        public AppDbContext()
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            Database.EnsureCreated();
-        }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql("Host=localhost;" +
-                                    "Port=5432;" +
-                                    "Database=notes;" +
-                                    "Username=postgres;" +
-                                    "Password=postgres");
+            modelBuilder.ApplyConfiguration(new TagConfiguration());
+            modelBuilder.ApplyConfiguration(new NoteConfiguration());
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
