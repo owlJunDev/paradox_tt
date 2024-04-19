@@ -16,37 +16,46 @@ namespace Backend.Repositories
             this.context = context;
         }
 
-        public void Add(Tag tag)
+        public async Task<List<Tag>> Get()
         {
-            context.tagTable.Add(tag);
-            context.SaveChanges();
+            return await context.tagTable
+            .AsNoTracking()
+            .OrderBy(t => t.nameTag)
+            .ToListAsync();
         }
 
-        public void Delete(Tag tag)
+        public async Task<Tag?> GetById(long id)
         {
-            var notes = context.noteTable.Include(n => n.tags).Where(n => n.tags.Contains(tag)).ToList();
-            foreach (var note in notes)
-            {
-                note.tags.Remove(tag);       
-                context.noteTable.Update(note);
-            }
-            context.tagTable.Remove(tag);
-            context.SaveChanges();
+            return await context.tagTable
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.id == id);
         }
 
-        public void Update(Tag tag)
+        public async Task<List<Tag>> GetByTitle(string title)
         {
-            context.tagTable.Update(tag);
-            context.SaveChanges();
-        }
-        public IEnumerable<Tag> GetAll()
-        {
-            return context.tagTable.ToList();
+            return await context.tagTable
+            .AsNoTracking()
+            .Where(t => t.nameTag.Contains(title))
+            .ToListAsync();
         }
 
-        public Tag GetById(long id)
+        public async Task Add(Tag tag)
         {
-            return context.tagTable.Find(id);
+            System.Console.WriteLine($"!==============={tag.nameTag}");
+            await context.tagTable.AddAsync(tag);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task Update(Tag tag)
+        {
+            await context.SaveChangesAsync();
+        }
+
+        public async Task Delete(long id)
+        {
+            await context.tagTable
+                .Where(t => t.id == id)
+                .ExecuteDeleteAsync();
         }
     }
 }

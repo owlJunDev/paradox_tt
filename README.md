@@ -1,13 +1,19 @@
 # paradox_tt
 1. установить версию [.Net 7](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) и [PostgreSQL](https://www.postgresql.org/download/)
     ## 
-    В проекте используются параметры для подключени к бд по умолчанию, для изменения параметров  внести изменения в [файле](/paradox_tt/Backend/appsettings.json)
+    В проекте используются параметры для подключени к бд по умолчанию, для изменения параметров внести изменения в [файле](/paradox_tt/Backend/appsettings.json)
+    ## настройка подключения к установленной бд
+    * из под windows 10
+    * из под ubuntu 22.04 
+        1. вход: `sudo -u postgres psql`
+        2. изменение пароля у пользователя по умолчанию: `ALTER USER postgres WITH PASSWORD 'postgres';`
+        3. создание нового супер аользователя: `CREATE USER username WITH PASSWORD 'password' SUPERUSER;`
 
 2. зайти через консоль в папку 
      * `paradox_tt/Backend`
 3. ввести следующие команды: 
-    * `dotnet build`
     * `dotnet tool install --global dotnet-ef`
+    * `dotnet build`
     * `dotnet ef database update`
     * `dotnet run`
 

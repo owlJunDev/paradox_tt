@@ -22,17 +22,17 @@ namespace Backend.Controllers
 
         [HttpGet]
         [EnableQuery]
-        public IEnumerable<Note> Get()
+        public async Task<List<Note>> Get()
         {
-            return noteRepository.GetAll();
+            return await noteRepository.Get();
         }
 
 
         [HttpGet("{id}")]
         [EnableQuery]
-        public Note Get(long id)
+        public async Task<Note> Get(long id)
         {
-            return noteRepository.GetById(id);
+            return await noteRepository.GetById(id);
         }
 
         [HttpPost]
@@ -44,16 +44,16 @@ namespace Backend.Controllers
             note.content = noteDto.content;
             note.dateCreate = DateTime.UtcNow;
             
-            noteRepository.Add(note, noteDto.tagId);
+            noteRepository.Add(note);
         }
-
+        
         [HttpPut("{id}")]
         [EnableQuery]
-        public void Put(long id, [FromBody] NoteDto noteDto) {
-            var note = noteRepository.GetById(id);
+        public async void Put(long id, [FromBody] NoteDto noteDto) {
+            var note = await noteRepository.GetById(id);
             note.title = noteDto.title;
             note.content = noteDto.content;
-            noteRepository.Update(note, noteDto.tagId);
+            await noteRepository.Update();
         }
 
         [HttpDelete("{id}")]

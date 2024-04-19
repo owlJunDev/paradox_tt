@@ -17,51 +17,46 @@ namespace Backend.Repositories
             this.context = context;
         }
 
-        public void Add(Note note, List<long> tagsId)
+        public async Task<List<Note>> Get()
         {
-            context.noteTable.Add(note);
-            context.SaveChanges();
-
-            if (tagsId != null)
-            {
-                foreach (var tag in context.tagTable.Where(t => tagsId.Contains(t.id)))
-                {
-                    note.tags.Add(tag);
-                    context.tagTable.Update(tag);
-                }
-            }
-            context.noteTable.Update(note);
-            context.SaveChanges();
+            return await context.noteTable
+            .AsNoTracking()
+            .OrderBy(n => n.dateCreate)
+            .ToListAsync();
         }
 
-        public void Update(Note note, List<long> tagsId)
+        public async Task<List<Note>> GetByPgae(int page, int pageSize)
         {
-            context.noteTable.Include(n => n.tags).FirstOrDefault(n => n.id == note.id).tags.Clear();
-
-            foreach (var tag in context.tagTable.Where(t => tagsId.Contains(t.id)))
-            {
-                note.tags.Add(tag);
-                context.tagTable.Update(tag);
-            }
-
-            context.noteTable.Update(note);
-            context.SaveChanges();
+            return await context.noteTable
+            .AsNoTracking()
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+        }
+        public async Task<Note?> GetById(long id)
+        {
+            return await context.noteTable
+            .AsNoTracking()
+            .FirstOrDefaultAsync(n => n.id == id);
         }
 
-        public void Delete(long id)
+        public async Task Add(Note note)
         {
-            context.noteTable.Remove(GetById(id));
-            context.SaveChanges();
+            await context.noteTable.AddAsync(note);
+            await context.SaveChangesAsync();
         }
 
-        public IEnumerable<Note> GetAll()
+        public async Task Update()
         {
-            return context.noteTable.Include(n => n.tags).ToList();
+            // context.noteTable.Update(note);
+            await context.SaveChangesAsync();
         }
 
-        public Note GetById(long id)
+        public async Task Delete(long id)
         {
-            return context.noteTable.FirstOrDefault(n => n.id == id);
+            await context.noteTable
+                .Where(n => n.id == id)
+                .ExecuteDeleteAsync();
         }
     }
 }

@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.AspNetCore.OData.Query;
 
 using Backend.DTO;
 using Backend.Models;
@@ -9,7 +11,7 @@ namespace Backend.Controllers
 
     [ApiController]
     [Route("api/tag")]
-    public class TagController : ControllerBase
+    public class TagController : ODataController
     {
         private readonly TagRepository tagRepository;
 
@@ -19,44 +21,45 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Tag> Get()
+        [EnableQuery]
+        public async Task<List<Tag>> Get()
         {
-            return tagRepository.GetAll();
+            return await tagRepository.Get();
         }
 
         [HttpGet("{id}")]
-        public Tag Get(long id)
+        public async Task<Tag> Get(long id)
         {
-            return tagRepository.GetById(id);
+            return await tagRepository.GetById(id);
         }
 
         [HttpPost]
-        public void Post(TagDto tagDto)
+        public async void Post(TagDto tagDto)
         {
             var tag = new Tag();
             tag.nameTag = tagDto.nameTag;
+            System.Console.WriteLine($"!==============={tagDto.nameTag}");
 
-            tagRepository.Add(tag);
+            await tagRepository.Add(tag);
         }
 
         [HttpPut("{id}/put")]
-        public void Put(TagDto tagDto, long id)
+        public async Task Put(TagDto tagDto, long id)
         {
-            var tag = tagRepository.GetById(id);
+            var tag = await tagRepository.GetById(id);
             if (tag != null)
             {
                 tag.nameTag = tagDto.nameTag;
-
-                tagRepository.Update(tag);
+                await tagRepository.Update(tag);
             }
         }
 
         [HttpDelete("{id}/delete")]
-        public void Delete(long id)
+        public async Task Delete(long id)
         {
-            var tag = tagRepository.GetById(id);
+            var tag = await tagRepository.GetById(id);
             if (tag != null)
-                tagRepository.Delete(tag);
+                await tagRepository.Delete(id);
         }
     }
 }
