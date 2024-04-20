@@ -14,11 +14,13 @@
 3. ввести следующие команды: 
     * `dotnet tool install --global dotnet-ef`
     * `dotnet build`
+    * `dotnet ef migrations add init`
     * `dotnet ef database update`
     * `dotnet run`
 
 4. ссылка для перехода в swagger: http://localhost:5000/swagger/index.html
 5. примеры фильтрации используя запросы через oData:
-    * `http://localhost:5000/api/note/?$filter=date(dateCreate) eq 2024-04-21`
-    * `http://localhost:5000/api/note/?$filter=title eq 'string'`
-    * `http://localhost:5000/api/note/?$filter=title eq 'string' and date(dateCreate) eq 2024-04-21`
+    * [выборка по дате](http://localhost:5000/api/note/?$filter=date(dateCreate)%20eq%202024-04-21)
+    * [выборка по названия](http://localhost:5000/api/note/?$filter=title%20eq%20%27title%27)
+    * [выборка по дате и названию](http://localhost:5000/api/note/?$filter=title%20eq%20%27string%27%20and%20date(dateCreate)%20eq%202024-04-21)
+    * [выборка по тегу](http://localhost:5000/api/note?$select=title,content&$filter=Tags/any(t:%20t/id%20eq%203))

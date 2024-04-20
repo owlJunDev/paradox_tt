@@ -48,6 +48,7 @@ namespace Backend.Repositories
 
         public async Task Update(Tag tag)
         {
+            context.Update(tag);
             await context.SaveChangesAsync();
         }
 

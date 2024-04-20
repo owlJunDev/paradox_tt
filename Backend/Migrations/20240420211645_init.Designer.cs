@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240415013541_init")]
+    [Migration("20240420211645_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -27,10 +27,12 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Note", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<long>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                        .HasColumnType("bigint")
                         .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("id"));
 
                     b.Property<string>("content")
                         .HasColumnType("text")
@@ -41,7 +43,8 @@ namespace Backend.Migrations
                         .HasColumnName("date-create");
 
                     b.Property<string>("title")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("title");
 
                     b.HasKey("id");
 
@@ -50,10 +53,12 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Tag", b =>
                 {
-                    b.Property<Guid>("id")
+                    b.Property<long>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                        .HasColumnType("bigint")
                         .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("id"));
 
                     b.Property<string>("nameTag")
                         .HasColumnType("text")
@@ -66,11 +71,11 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("NoteTag", b =>
                 {
-                    b.Property<Guid>("notesid")
-                        .HasColumnType("uuid");
+                    b.Property<long>("notesid")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("tagsid")
-                        .HasColumnType("uuid");
+                    b.Property<long>("tagsid")
+                        .HasColumnType("bigint");
 
                     b.HasKey("notesid", "tagsid");
 

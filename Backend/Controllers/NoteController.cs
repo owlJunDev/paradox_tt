@@ -37,27 +37,28 @@ namespace Backend.Controllers
 
         [HttpPost]
         [EnableQuery]
-        public void Post([FromBody] NoteDto noteDto)
+        public async Task Post([FromBody] NoteDto noteDto)
         {
+            System.Console.WriteLine("start");
             var note = new Note();
             note.title = noteDto.title;
             note.content = noteDto.content;
             note.dateCreate = DateTime.UtcNow;
             
-            noteRepository.Add(note);
+            await noteRepository.Add(note, noteDto.tagId);
         }
         
         [HttpPut("{id}")]
         [EnableQuery]
-        public async void Put(long id, [FromBody] NoteDto noteDto) {
+        public async Task Put(long id, [FromBody] NoteDto noteDto) {
             var note = await noteRepository.GetById(id);
             note.title = noteDto.title;
             note.content = noteDto.content;
-            await noteRepository.Update();
+            await noteRepository.Update(note, noteDto.tagId);
         }
 
         [HttpDelete("{id}")]
         [EnableQuery]
-        public void Delete(long id) => noteRepository.Delete(id);
+        public async Task Delete(long id) => await noteRepository.Delete(id);
     }
 }

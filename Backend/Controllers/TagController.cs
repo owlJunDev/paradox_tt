@@ -34,7 +34,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async void Post(TagDto tagDto)
+        public async Task Post(TagDto tagDto)
         {
             var tag = new Tag();
             tag.nameTag = tagDto.nameTag;

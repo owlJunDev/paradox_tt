@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -15,7 +16,8 @@ namespace Backend.Migrations
                 name: "note",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     title = table.Column<string>(type: "text", nullable: true),
                     content = table.Column<string>(type: "text", nullable: true),
                     datecreate = table.Column<DateTime>(name: "date-create", type: "timestamp with time zone", nullable: false)
@@ -29,7 +31,8 @@ namespace Backend.Migrations
                 name: "tag",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     nametag = table.Column<string>(name: "name_tag", type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -41,8 +44,8 @@ namespace Backend.Migrations
                 name: "NoteTag",
                 columns: table => new
                 {
-                    notesid = table.Column<Guid>(type: "uuid", nullable: false),
-                    tagsid = table.Column<Guid>(type: "uuid", nullable: false)
+                    notesid = table.Column<long>(type: "bigint", nullable: false),
+                    tagsid = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {

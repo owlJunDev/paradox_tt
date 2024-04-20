@@ -22,6 +22,7 @@ namespace Backend.Repositories
             return await context.noteTable
             .AsNoTracking()
             .OrderBy(n => n.dateCreate)
+            .Include(n => n.tags)
             .ToListAsync();
         }
 
@@ -40,15 +41,17 @@ namespace Backend.Repositories
             .FirstOrDefaultAsync(n => n.id == id);
         }
 
-        public async Task Add(Note note)
+        public async Task Add(Note note, List<long>? tId)
         {
+            
             await context.noteTable.AddAsync(note);
+            note.tags = context.tagTable.Where(t => tId.Contains(t.id)).ToList();
             await context.SaveChangesAsync();
         }
 
-        public async Task Update()
+        public async Task Update(Note note, List<long>? tId)
         {
-            // context.noteTable.Update(note);
+            context.noteTable.Update(note);
             await context.SaveChangesAsync();
         }
 
