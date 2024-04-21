@@ -37,13 +37,12 @@ namespace Backend.Repositories
         public async Task<Note?> GetById(long id)
         {
             return await context.noteTable
-            .AsNoTracking()
+            .Include(n => n.tags)
             .FirstOrDefaultAsync(n => n.id == id);
         }
 
         public async Task Add(Note note, List<long>? tId)
         {
-            
             await context.noteTable.AddAsync(note);
             note.tags = context.tagTable.Where(t => tId.Contains(t.id)).ToList();
             await context.SaveChangesAsync();
@@ -52,6 +51,21 @@ namespace Backend.Repositories
         public async Task Update(Note note, List<long>? tId)
         {
             context.noteTable.Update(note);
+            var oldListTag = context.noteTable.Include(n => n.tags).SingleOrDefault(n => n.id == note.id).tags;
+            var newListTag = context.tagTable.Where(t => tId.Contains(t.id)).ToList();
+
+            if (oldListTag != null)
+            {
+                note.tags.Clear();
+                await context.SaveChangesAsync();
+            }
+
+            if (newListTag != null)
+            {
+                var result = newListTag.Union(oldListTag).Intersect(newListTag);
+                note.tags.AddRange(result);
+            }
+
             await context.SaveChangesAsync();
         }
 

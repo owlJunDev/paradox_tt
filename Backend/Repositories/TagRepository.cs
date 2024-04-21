@@ -41,7 +41,6 @@ namespace Backend.Repositories
 
         public async Task Add(Tag tag)
         {
-            System.Console.WriteLine($"!==============={tag.nameTag}");
             await context.tagTable.AddAsync(tag);
             await context.SaveChangesAsync();
         }

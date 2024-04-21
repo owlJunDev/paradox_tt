@@ -29,17 +29,14 @@ namespace Backend.Controllers
 
 
         [HttpGet("{id}")]
-        [EnableQuery]
         public async Task<Note> Get(long id)
         {
             return await noteRepository.GetById(id);
         }
 
         [HttpPost]
-        [EnableQuery]
         public async Task Post([FromBody] NoteDto noteDto)
         {
-            System.Console.WriteLine("start");
             var note = new Note();
             note.title = noteDto.title;
             note.content = noteDto.content;
@@ -49,7 +46,6 @@ namespace Backend.Controllers
         }
         
         [HttpPut("{id}")]
-        [EnableQuery]
         public async Task Put(long id, [FromBody] NoteDto noteDto) {
             var note = await noteRepository.GetById(id);
             note.title = noteDto.title;
@@ -58,7 +54,6 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [EnableQuery]
         public async Task Delete(long id) => await noteRepository.Delete(id);
     }
 }

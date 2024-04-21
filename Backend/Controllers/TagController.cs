@@ -38,12 +38,10 @@ namespace Backend.Controllers
         {
             var tag = new Tag();
             tag.nameTag = tagDto.nameTag;
-            System.Console.WriteLine($"!==============={tagDto.nameTag}");
-
             await tagRepository.Add(tag);
         }
 
-        [HttpPut("{id}/put")]
+        [HttpPut("{id}")]
         public async Task Put(TagDto tagDto, long id)
         {
             var tag = await tagRepository.GetById(id);
@@ -54,7 +52,7 @@ namespace Backend.Controllers
             }
         }
 
-        [HttpDelete("{id}/delete")]
+        [HttpDelete("{id}")]
         public async Task Delete(long id)
         {
             var tag = await tagRepository.GetById(id);
