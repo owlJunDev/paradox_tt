@@ -10,7 +10,6 @@ namespace Backend
 {
     class Program
     {
-
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -22,12 +21,18 @@ namespace Backend
 
             builder.Services.AddScoped<NoteRepository>();
             builder.Services.AddScoped<TagRepository>();
-            
+
             builder.Services.AddDbContext<AppDbContext>(
                 options =>
                 {
                     options.UseNpgsql(configuration.GetConnectionString(nameof(AppDbContext)));
                 });
+
+            builder.Services.AddCors(options => options.AddPolicy(name: "MyCorsPolicy",
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+                }));
 
             var modelBuilder = new ODataConventionModelBuilder();
             modelBuilder.EntityType<Note>();
@@ -63,12 +68,12 @@ namespace Backend
                 });
             }
 
+            app.UseCors("MyCorsPolicy");
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
 
             app.Run();
         }
-
     }
 }

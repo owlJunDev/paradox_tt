@@ -1,0 +1,65 @@
+<div class="all-content">
+
+    <h1>Список Заметок</h1>
+
+    <div class="d-header">
+        <div class="d-dh-i-field">
+            <label>Тема</label><br>
+            <input type="text" class="i-dh-btn" />
+        </div>
+        <div class="d-dh-i-field">
+            <label>Текст</label><br>
+            <input type="text" class="i-dh-btn" />
+        </div>
+        <div class="d-dh-i-field">
+            <label>Дата создания</label><br>
+            <input type="date" class="i-dh-btn" />
+        </div>
+
+        <button (click)="sendFilter()" id="myBtn">Поиск</button>
+        <button (click)="openModalAddNote()" id="myBtn">Добавить</button>
+    </div>
+
+    @for (note of noteList; track note.id) {
+    <div class="d-card">
+        <input type="hidden" value="{{ note.id }}" />
+        <div class="title-note"> {{ note.title }}
+            <!-- <div class="icon-box-delete">🗑 ✒</div> -->
+            <div style="float: right;">
+                <label class="icon-box-edit" (click)="openModalEditNote(note.id, note.title, note.content)">✒</label>
+                <label class="icon-box-delete" (click)="deleteNote(note.id)">🗑</label>
+            </div>
+        </div>
+        <div class="content-note">{{ note.content }}</div>
+        <div class="content-createAt">{{ convertDate(note.createAt) }}</div>
+    </div>
+    }
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить заметку</h2>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <label>Тема</label><br>
+                    <input type="text" [(ngModel)]="title" class="modal-data-input" />
+                </div>
+                <div>
+                    <label>Текст</label><br>
+                    <textarea type="text" [(ngModel)]="content" class="text-modal"></textarea>
+                </div>
+            </div>
+            <div class="modal-bottom">
+                <button (click)="closeModal()">Назад</button>
+                @if (idEdit === null) {
+                    <button (click)="addNote(title, content)">Добавить</button>
+                }
+                @else {
+                    <button (click)="editNote(title, content)">Сохранить</button>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>

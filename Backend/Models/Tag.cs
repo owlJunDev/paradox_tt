@@ -11,6 +11,7 @@ namespace Backend.Models
         [Column("id")]
         public long id { get; set; }
 
+        [Required]
         [Column("name_tag")]
         public string? nameTag { get; set; }
 

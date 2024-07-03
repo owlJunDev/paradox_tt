@@ -31,6 +31,8 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+Frontend/node_modules
+Frontend/.angular
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

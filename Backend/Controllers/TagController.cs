@@ -22,15 +22,17 @@ namespace Backend.Controllers
 
         [HttpGet]
         [EnableQuery]
-        public async Task<List<Tag>> Get()
+        public async Task<IActionResult> Get()
         {
-            return await tagRepository.Get();
+            var result = await tagRepository.Get();
+            return result.Count != 0? Ok(result) : NoContent(); 
         }
 
         [HttpGet("{id}")]
-        public async Task<Tag> Get(long id)
+        public async Task<IActionResult> Get(long id)
         {
-            return await tagRepository.GetById(id);
+            var result = await tagRepository.GetById(id);
+            return result != null ? Ok(result) : NoContent();
         }
 
         [HttpPost]

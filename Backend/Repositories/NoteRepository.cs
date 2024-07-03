@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repositories
 {
+    
     public class NoteRepository
     {
         private readonly AppDbContext context;
@@ -17,11 +18,11 @@ namespace Backend.Repositories
             this.context = context;
         }
 
-        public async Task<List<Note>> Get()
+        public async Task<List<Note>> GetAll()
         {
             return await context.noteTable
             .AsNoTracking()
-            .OrderBy(n => n.dateCreate)
+            .OrderBy(n => n.createAt)
             .Include(n => n.tags)
             .ToListAsync();
         }
