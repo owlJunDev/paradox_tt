@@ -1,4 +1,4 @@
-<div class="all-content">
+<div>
 
     <h1>Список Заметок</h1>
 
@@ -19,20 +19,34 @@
         <button (click)="sendFilter()" id="myBtn">Поиск</button>
         <button (click)="openModalAddNote()" id="myBtn">Добавить</button>
     </div>
-
-    @for (note of noteList; track note.id) {
-    <div class="d-card">
-        <input type="hidden" value="{{ note.id }}" />
-        <div class="title-note"> {{ note.title }}
-            <!-- <div class="icon-box-delete">🗑 ✒</div> -->
-            <div style="float: right;">
-                <label class="icon-box-edit" (click)="openModalEditNote(note.id, note.title, note.content)">✒</label>
-                <label class="icon-box-delete" (click)="deleteNote(note.id)">🗑</label>
-            </div>
+    @if (noteList.length) {
+        <div class="d-conent">
+            @for (note of noteList; track note.id) {
+                <div class="d-card">
+                    <input type="hidden" value="{{ note.id }}" />
+                    <div class="title-note"> {{ note.title }}
+                        <!-- <div class="icon-box-delete">🗑 ✒</div> -->
+                        <div style="float: right;">
+                            <label class="icon-box-edit" (click)="openModalEditNote(note.id, note.title, note.content)">✒</label>
+                            <label class="icon-box-delete" (click)="deleteNote(note.id)">🗑</label>
+                        </div>
+                    </div>
+                    <div class="content-note">{{ note.content }}</div>
+                    <div class="footer-note">
+                        <div class="tag-list-note">
+                            <div class="tag-note">tag</div>
+                        </div>
+                        <div class="content-createAt">
+                            {{ note.time }} <br>
+                            {{ note.date }} <br>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
-        <div class="content-note">{{ note.content }}</div>
-        <div class="content-createAt">{{ convertDate(note.createAt) }}</div>
-    </div>
+    }
+    @else {
+        <div class="no-data">No Data</div>
     }
 
     <div id="myModal" class="modal">

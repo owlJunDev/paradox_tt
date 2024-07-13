@@ -5,16 +5,19 @@ class Note {
     id: number;
     title: string;
     content: string;
-    createAt: Date;
+    date: string;
+    time: string;
     constructor(
         id: number,
         title: string,
         content: string,
-        createAt: Date) {
+        date: string,
+        time: string) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.createAt = createAt;
+        this.date = date;
+        this.time = time;
     }
 }
 
@@ -31,12 +34,29 @@ export class AppComponent implements OnInit {
     noteList: Note[] = [];
     idEdit: number = null;
 
-    convertDate(date: Date) {        
-        return date.getDay().toString() + '.' + 
-                date.getMonth().toString() + '.' + 
-                date.getFullYear().toString() + '\n' +
-                date.getHours() + ':' + 
-                date.getMinutes();
+    convertDate(dateStr: string) {
+        let dateTime = new Date(dateStr);
+        let date = "", time = "";
+
+        if (dateTime.getDate() < 10)
+            date += "0";
+        date += dateTime.getDate() + '/';
+        if (dateTime.getMonth() < 10)
+            date += "0";
+        date += (dateTime.getMonth() + 1) + '/';
+        date += dateTime.getFullYear();
+
+        if (dateTime.getHours() < 10)
+            time += "0";
+        time += dateTime.getHours() + ':';
+        if (dateTime.getMinutes() < 10)
+            time += "0";
+        time += dateTime.getMinutes();
+
+        return {
+            date: date,
+            time: time,
+        };
     }
 
     ngOnInit() {
@@ -50,12 +70,15 @@ export class AppComponent implements OnInit {
             if (response.ok) {
                 response.json().then(results => {
                     for (let result of results) {
+                        let dateTime = this.convertDate(result['createAt']);
                         this.noteList.push(new Note(
                             result['id'],
                             result['title'],
                             result['content'],
-                            new Date(result['createAt'])
-                        ));
+                            dateTime.date,
+                            dateTime.time
+                            )
+                        );
                     }
                 });
             }
@@ -109,11 +132,13 @@ export class AppComponent implements OnInit {
         }).then(async response => {
             if (response.ok)
                 response.json().then(result => {
+                    let dateTime = this.convertDate(result['createAt']);
                     this.noteList.push(new Note(
                         result['id'],
                         result['title'],
                         result['content'],
-                        new Date(result['createAt'])
+                        dateTime.date,
+                        dateTime.time
                     ));
 
                 });
@@ -140,11 +165,13 @@ export class AppComponent implements OnInit {
         }).then(async response => {
             if (response.ok)
                 response.json().then(result => {
+                    let dateTime = this.convertDate(result['createAt']);
                     this.noteList.push(new Note(
                         result['id'],
                         result['title'],
                         result['content'],
-                        new Date(result['createAt'])
+                        dateTime.date,
+                        dateTime.time
                     ));
 
                 });
